@@ -73,6 +73,7 @@ function handleClick(event) {
 //El objetivo es poder pintar los cocktails
 //Se recoge la función renderCocktailsStructure para meter los datos de los cocktails dentro de la estructura
 //Esta función (renderCocktailsList) se llevará al Fetch para que se rellene una vez la API se haya traído a nuestro proyecto. Debemos tener en cuenta que el FETCH tarda más (aunque imperceptible) en cargar que el resto de ejecuciones, por eso lo debemos llamar en FETCH. 
+
 function renderCocktailsList (listCocktailsData) {    
     for (const cocktails of listCocktailsData) {        
         if (cocktails.strDrinkThumb) { 
@@ -89,13 +90,19 @@ function renderCocktailsList (listCocktailsData) {
 //Crear estructura de LI que se pintará en el HTML 
 //Usar referencia del objeto para cada dato que necesito. En este caso el nombre del cocktail (strDrink) y la imagen del cocktail (strDrinkThumb)
 function renderCocktailsStructure(cocktails) {
+    let information = '';
+    if (cocktails.strAlcoholic === 'Non alcoholic'){
+        information = 'Sin alcohol'
+    } else {
+        information = 'Tiene alcohol'
+    }
     const selectGeneral=listFavouritesCocktailsData.find(cocktailsFav => cocktails.idDrink ===cocktailsFav.idDrink)
     let html ="";
       if (selectGeneral !== undefined){
-        html =  `<li class="js-elementLi list-all select" id=${cocktails.idDrink}><h3 class="name-cocktail">${cocktails.strDrink}</h3>
+        html =  `<li class="js-elementLi list-all select" id=${cocktails.idDrink}><h3 class="name-cocktail">${cocktails.strDrink}</h3><p class="name-cocktail">${information}</p>
         <img class="image" src= ${cocktails.strDrinkThumb} alt="${cocktails.strDrink}" title="${cocktails.strDrink}"/> </li>`;
         } else {
-            html =  `<li class="js-elementLi list-all" id=${cocktails.idDrink}><h3 class="name-cocktail">${cocktails.strDrink}</h3>
+            html =  `<li class="js-elementLi list-all" id=${cocktails.idDrink}><h3 class="name-cocktail">${cocktails.strDrink}</h3><p class="name-cocktail">${information}</p>
             <img class="image-cocktails" src= ${cocktails.strDrinkThumb} alt="${cocktails.strDrink}" title="${cocktails.strDrink}"/> </li>`;
         }      
   
@@ -120,9 +127,11 @@ function handleClickElementLi(ev){
     const idSelected = ev.currentTarget.id 
     const slctCocktail=listCocktailsData.find(cocktails => cocktails.idDrink === idSelected);
     const indexCocktailFav= listFavouritesCocktailsData.findIndex(cocktails => cocktails.idDrink === idSelected); //Buscar la posición del elemento 
+    console.log(slctCocktail.strDrink);
     if (indexCocktailFav === -1 ) {
         ev.currentTarget.classList.add('select');
         listFavouritesCocktailsData.push(slctCocktail);
+        
     } else { //si esta en el listado de favoritos, eliminalo
         ev.currentTarget.classList.remove('select');
         listFavouritesCocktailsData.splice(indexCocktailFav, 1);
